@@ -1,0 +1,101 @@
+import { dataBase, data } from "./database";
+import { checkOrCreateStorage, updateStorage } from "./localStorage";
+
+const app = document.getElementById('TPI-test');
+
+const initApp = () => {
+    checkOrCreateStorage();
+    paintQuestions();
+};
+
+const makeSlug = (str) => {
+    return str.replace(/\s+/g, '-').toLowerCase();
+};
+
+const paintQuestions = () => {
+    // paint html for questions where all of them are range inputs from 1 to 10
+    // add an option for comments under each question
+    // on update the each selector should update the data.answers array
+
+    const title = dataBase[data.step].title;
+    let slug = makeSlug(title);
+    let questions = dataBase[data.step].questions;
+    let html = `<h2>${title}</h2>`;
+    html += `<div class="questions">`;
+    questions.forEach((question, localIndex) => {
+        html += `<div class="question">`;
+        html += `<label for="${slug}-question-${localIndex}">${question}</label>`;
+        html += '<div class="range">';
+        html += `<input type="range" name="${slug}-question-${localIndex}" id="${slug}-question-${localIndex}" min="1" max="10" value="${(data.answers.length > data.step && data.answers[data.step][localIndex]) ? data.answers[data.step][localIndex].value : 0}" data-index="${localIndex}" data-slug="${slug}">`;
+        html += `<span class="value" id="${slug}-value-${localIndex}">${(data.answers.length > data.step && data.answers[data.step][localIndex]) ? data.answers[data.step][localIndex].value : 0}</span>`;
+        html += '</div>';
+        html += `<input type="text" name="${slug}-comment-${localIndex}" id="${slug}-comment-${localIndex}" data-index="${localIndex}" data-slug="${slug}" value="${(data.answers.length > data.step && data.answers[data.step][localIndex]) ? data.answers[data.step][localIndex].comment : ''}">`;
+        html += `</div>`;
+    });
+    html += `</div>`;
+    html += `<div class="buttons">`;
+    html += `<button class="prev" ${data.step === 0 ? 'disabled' : ''}>Anterior</button>`;
+    html += `<button class="next" ${data.step === dataBase.length -1  ? 'disabled' : ''}>Siguiente</button>`;
+    app.innerHTML = html;
+    addEventListeners();
+};
+
+const addEventListeners = () => {
+    // add event listeners to all range inputs
+    const ranges = document.querySelectorAll('input[type="range"]');
+    ranges.forEach(input => {
+        input.addEventListener('input', (e) => {
+            let localIndex = e.target.dataset.index;
+            let slug = e.target.dataset.slug;
+            const value = getQuestionResult(localIndex, slug);
+            document.getElementById(`${slug}-value-${localIndex}`).innerHTML = value.value;
+            if (data.answers.length !== data.step + 1) {
+                data.answers.push([]);
+            }
+            data.answers[data.step][localIndex] = value;
+            updateStorage();
+        });
+    });
+
+    // add event listeners to all comments inputs
+    const comments = document.querySelectorAll('input[type="text"]');
+    comments.forEach(input => {
+        input.addEventListener('input', (e) => {
+            let localIndex = e.target.dataset.index;
+            let slug = e.target.dataset.slug;
+            const value = getQuestionResult(localIndex, slug);
+            if (data.answers.length !== data.step + 1) {
+                data.answers.push([]);
+            }
+            data.answers[data.step][localIndex] = value;
+            updateStorage();
+        });
+    });
+
+    // add event listeners to buttons
+    const buttons = document.querySelector('.buttons');
+    if(buttons === null) return;
+    buttons.addEventListener('click', (e) => {
+        if (e.target.matches('.next')) {
+            data.step++;
+            paintQuestions(data.step);
+        }
+        if (e.target.matches('.prev')) {
+            data.step--;
+            paintQuestions(data.step);
+        }
+    });
+
+    const getQuestionResult = (index, slug) => {
+        let value = document.getElementById(`${slug}-question-${index}`).value;
+        let comment = document.getElementById(`${slug}-comment-${index}`).value;
+        const response = {
+            "value": value,
+            "comment": comment
+        }
+        return response;
+    };
+};
+
+
+export { initApp };
