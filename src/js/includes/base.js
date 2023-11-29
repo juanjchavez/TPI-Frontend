@@ -32,13 +32,13 @@ const paintQuestions = () => {
         html += `<input type="range" name="${slug}-question-${localIndex}" id="${slug}-question-${localIndex}" min="1" max="10" value="${(data.answers.length > data.step && data.answers[data.step][localIndex]) ? data.answers[data.step][localIndex].value : 0}" data-index="${localIndex}" data-slug="${slug}">`;
         html += `<span class="value" id="${slug}-value-${localIndex}">${(data.answers.length > data.step && data.answers[data.step][localIndex]) ? data.answers[data.step][localIndex].value : 0}</span>`;
         html += '</div>';
-        html += `<input type="text" name="${slug}-comment-${localIndex}" id="${slug}-comment-${localIndex}" data-index="${localIndex}" data-slug="${slug}" value="${(data.answers.length > data.step && data.answers[data.step][localIndex]) ? data.answers[data.step][localIndex].comment : ''}">`;
+        html += `<input type="text" placeholder="Comente aqui" name="${slug}-comment-${localIndex}" id="${slug}-comment-${localIndex}" data-index="${localIndex}" data-slug="${slug}" value="${(data.answers.length > data.step && data.answers[data.step][localIndex]) ? data.answers[data.step][localIndex].comment : ''}">`;
         html += `</div>`;
     });
     html += `</div>`;
     html += `<div class="buttons">`;
     html += `<button class="prev" ${data.step === 0 ? 'disabled' : ''}>Anterior</button>`;
-    html += `<button class="next" ${data.step === dataBase.length -1  ? 'disabled' : ''}>Siguiente</button>`;
+    html += `<button class="next">${data.step === dataBase.length -1  ? 'Enviar' : 'Siguiente'}</button>`;
     app.innerHTML = html;
     addEventListeners();
 };
@@ -89,6 +89,15 @@ const addEventListeners = () => {
                     title: 'Espera',
                     text: 'Todas las preguntas necesitan tener un valor entre 1 y 10',
                     icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+            if (data.step === dataBase.length - 1) {
+                Swal.fire({
+                    title: '¡Gracias!',
+                    text: 'Hemos recibido tus respuestas',
+                    icon: 'success',
                     confirmButtonText: 'OK'
                 });
                 return;

@@ -1,0 +1,39 @@
+.questions {
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+  
+    .question {
+      margin-bottom: 20px;
+  
+      label {
+        display: block;
+        font-size: 1.2em;
+        margin-bottom: 10px;
+      }
+  
+      .range {
+        display: flex;
+        align-items: center;
+  
+        input[type="range"] {
+          flex-grow: 1;
+          margin-right: 10px;
+        }
+  
+        .value {
+          width: 30px;
+          text-align: center;
+        }
+      }
+  
+      input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+        margin-top: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+    }
+  }
