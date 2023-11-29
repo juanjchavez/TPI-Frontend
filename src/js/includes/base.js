@@ -1,5 +1,6 @@
 import { dataBase, data } from "./database";
 import { checkOrCreateStorage, updateStorage } from "./localStorage";
+import Swal from 'sweetalert2'
 
 const app = document.getElementById('TPI-test');
 
@@ -16,6 +17,8 @@ const paintQuestions = () => {
     // paint html for questions where all of them are range inputs from 1 to 10
     // add an option for comments under each question
     // on update the each selector should update the data.answers array
+
+    data.answers.push([]);
 
     const title = dataBase[data.step].title;
     let slug = makeSlug(title);
@@ -38,6 +41,10 @@ const paintQuestions = () => {
     html += `<button class="next" ${data.step === dataBase.length -1  ? 'disabled' : ''}>Siguiente</button>`;
     app.innerHTML = html;
     addEventListeners();
+};
+
+const confirmStepComplete = () => {
+    return data.answers[data.step].filter(answer => answer !== null).length === 7;
 };
 
 const addEventListeners = () => {
@@ -77,12 +84,21 @@ const addEventListeners = () => {
     if(buttons === null) return;
     buttons.addEventListener('click', (e) => {
         if (e.target.matches('.next')) {
+            if(!confirmStepComplete()){
+                Swal.fire({
+                    title: 'Espera',
+                    text: 'Todas las preguntas necesitan tener un valor entre 1 y 10',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
             data.step++;
-            paintQuestions(data.step);
+            paintQuestions();
         }
         if (e.target.matches('.prev')) {
             data.step--;
-            paintQuestions(data.step);
+            paintQuestions();
         }
     });
 
