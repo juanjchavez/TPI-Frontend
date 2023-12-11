@@ -27,6 +27,8 @@ const checkOrCreateStorage = () => {
 };
 
 const updateStorage = () => {
+    // update timestamp
+    data.timestamp = Date.now();
     localStorage.setItem('TPI-test', JSON.stringify(data));
 };
 

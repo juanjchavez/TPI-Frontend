@@ -1,4 +1,4 @@
-import { dataBase, data } from "./database";
+import { dataBase, data, envs } from "./database";
 import { checkOrCreateStorage, updateStorage } from "./localStorage";
 import Swal from 'sweetalert2'
 
@@ -94,12 +94,7 @@ const addEventListeners = () => {
                 return;
             }
             if (data.step === dataBase.length - 1) {
-                Swal.fire({
-                    title: '¡Gracias!',
-                    text: 'Hemos recibido tus respuestas',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });
+                submit();
                 return;
             }
             data.step++;
@@ -110,6 +105,45 @@ const addEventListeners = () => {
             paintQuestions();
         }
     });
+
+    const submit = () => {
+        const url = `${envs.api}/new`;
+        console.log(data, 'data');
+        const info = {
+            "name": envs.churchName,
+            "data": data.answers.filter(el => el.length > 0),
+        };
+        console.log(info, 'info');
+        const options = {
+            method: 'POST',
+            body: JSON.stringify(info),
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        };
+        fetch(url, options)
+            .then(response => {
+                console.log(response, 'response');
+                if (response.status !== 201) {
+                    throw new Error(response.JSON());
+                }else {
+                    Swal.fire({
+                        title: '¡Gracias!',
+                        text: 'Hemos recibido tus respuestas',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Hubo un error al enviar tus respuestas',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            });
+    };
 
     const getQuestionResult = (index, slug) => {
         let value = document.getElementById(`${slug}-question-${index}`).value;

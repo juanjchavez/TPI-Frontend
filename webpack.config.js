@@ -3,7 +3,6 @@ const cssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const terserPlugin = require('terser-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const CopyPlugin = require("copy-webpack-plugin");
 
 const path = require('path');
 
@@ -76,12 +75,6 @@ module.exports = {
     }),
     new miniCssExtractPlugin({
       filename: 'assets/bundle.css'
-    }),
-    new CopyPlugin({
-      patterns: [
-        { from: "src/img", to: "images" },
-      ],
-    
     }),
     new CleanWebpackPlugin(),
   ],

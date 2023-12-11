@@ -127,4 +127,9 @@ let data = {
     "answers": [],
 }
 
-export { dataBase, data };
+const envs = {
+    api: "https://tpi-backend",
+    churchName: "Comunidad Cristiana Timoteo",
+};
+
+export { dataBase, data, envs };
