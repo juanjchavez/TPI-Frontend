@@ -83,6 +83,11 @@ module.exports = {
     minimizer: [
         new cssMinimizerPlugin(),
         new terserPlugin(),
-    ]
+    ],
+    splitChunks: {
+      chunks: 'all',
+      minSize: 100000000, // A large number to prevent splitting
+      maxSize: 100000001
+    }
   }
 };

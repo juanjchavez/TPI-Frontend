@@ -13,4 +13,21 @@ body{
     h2 {
         text-align: center;
     }
+
+    .results-wrapper .answers{
+        align-items: center;
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        justify-content: center;
+        margin: 25px 0;
+
+        .answer{
+            text-align: center;
+        }
+        
+        .answer-title{
+            text-transform: capitalize;
+        }
+    }
 }
